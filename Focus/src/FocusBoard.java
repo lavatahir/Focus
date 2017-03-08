@@ -1,3 +1,4 @@
+package src;
 import java.util.*;
 
 public class FocusBoard {
@@ -95,7 +96,8 @@ public class FocusBoard {
 		HashSet<FocusBoard> movesPossible = new HashSet<FocusBoard>();
 		for(int i = 1; i <=squareStackSize;i++){
 			for(int index = lowerIndex; index < upperIndex; index++){
-				System.out.println("HI"+movesPossible.size());
+				//System.out.println("HI"+movesPossible.size());
+				System.out.println(move(x,y,x+index,y,i));
 				movesPossible.add(move(x,y,x+index,y,i));
 				//movesPossible.add(move(x,y,x,y+index,i));
 			}
@@ -115,7 +117,7 @@ public class FocusBoard {
 	public char getRandomColor(){
 		return colors.charAt(r.nextInt(colors.length()));
 	}
-	public String boardToString(){
+	public String toString(){
 		String s = "";
 		for (int i = 0; i < 8; i++){	
 			for(int j = 0; j < 8; j++){
@@ -144,24 +146,11 @@ public class FocusBoard {
 		return s;
 	}
 	public static void main(String[] args){
-		Stack<Integer> stack = new Stack<Integer>();
-		stack.push(1);
-		stack.push(2);
-		stack.push(3);
-		stack.push(4);
-		stack.pop();
-		System.out.println(stack);
-		
-		Queue<Integer> queue = new LinkedList<Integer>();
-		queue.add(1);
-		queue.add(2);
-		queue.add(3);
-		queue.add(4);
-		System.out.println(queue);
 		
 		FocusBoard fb = new FocusBoard();
-		System.out.println(fb.generateSuccessors().size());/*
-		System.out.println(fb.boardToString());
+		System.out.println(fb);
+		System.out.println(fb.generateSuccessors().size());
+		/*
 		
 		ArrayList<Character> pieces = new ArrayList<Character>();
 		pieces.add('R');
