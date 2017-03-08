@@ -40,6 +40,9 @@ public class Square {
 	public int size(){
 		return stack.size();
 	}
+	public Character getTopPiece(){
+		return stack.get(0);
+	}
 	public LinkedList<Character> getPieces(int numPiecesMove){
 		LinkedList<Character> pieces = new LinkedList<Character>();
 		for(int i = 0; i < numPiecesMove; i++){

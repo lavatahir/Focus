@@ -47,27 +47,59 @@ public class FocusBoard {
 		if(piecesRemoved == 8){
 			return true;
 		}
-		else if(generateSuccessors('B').size() == 0){
+		else if(generateSuccessors().size() == 0){
 			return true;
 		}
 		return false;
 	}
-	private void changeTurn(){
-		if(turn == 'B'){
-			turn = 'R';
+	private Character changeTurn(Character t){
+		if(t == 'B'){
+			return 'R';
 		}
 		else{
-			turn = 'B';
+			return 'B';
 		}
 	}
-	private HashSet<FocusBoard> generateSuccessors(char c) {
-		// TODO Auto-generated method stub
+	public HashSet<FocusBoard> generateSuccessors() {
+		HashSet<FocusBoard> successors = new HashSet<FocusBoard>();
+		if(turn == 'B'){
+			for(int i = 0;i < 8; i++){
+				for(int j = 0; j<8;j++){
+					try{
+					if(board[i][j].getTopPiece() == turn){
+						successors.addAll(findMoves(board[i][j],i,j));
+					}
+					}catch(Exception e){}
+					
+				}
+			}
+		}
+		else if(turn == 'R'){
+			for(int i = 0;i < 8; i++){
+				for(int j = 0; j<8;j++){
+					if(board[i][j].getTopPiece() == turn)
+						successors.addAll(findMoves(board[i][j],i,j));
+				}
+			}
+		}
 		return null;
+	}
+	private Collection<? extends FocusBoard> findMoves(Square square,int x, int y) {
+		int squareStackSize = square.size();
+		int distance = square.size();
+		int LowerIndex = 0 - distance;
+		int UpperIndex = distance;
+		HashSet<FocusBoard> movesPossible = new HashSet<FocusBoard>();
+		for(int i = 1; i <=squareStackSize;i++){
+			movesPossible.add(move(x,y,x+1,y+1,i));
+			System.out.println(movesPossible.size());
+		}
+		return movesPossible;
 	}
 	//add move which returns new state
 	public FocusBoard move(int startX, int startY, int endX, int endY, int numPiecesMove){
-		changeTurn();
-		FocusBoard fb = new FocusBoard(board,piecesRemoved,turn);
+		Character newTurn = changeTurn(turn);
+		FocusBoard fb = new FocusBoard(board,piecesRemoved,newTurn);
 		LinkedList<Character> pieces = fb.board[startX][startY].getPieces(numPiecesMove);
 		piecesRemoved+=fb.board[endX][endY].addPiece(pieces);
 		fb.board[startX][startY].removeStartPiece(pieces);
@@ -121,6 +153,7 @@ public class FocusBoard {
 		System.out.println(queue);
 		
 		FocusBoard fb = new FocusBoard();
+		System.out.println(fb.generateSuccessors());/*
 		System.out.println(fb.boardToString());
 		
 		ArrayList<Character> pieces = new ArrayList<Character>();
@@ -141,6 +174,6 @@ public class FocusBoard {
 		
 		fb.move(1,3,2,3,3);
 		System.out.println(fb.boardToString());
-		System.out.println(fb.piecesRemoved);
+		System.out.println(fb.piecesRemoved);*/
 	}
 }
