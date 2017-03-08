@@ -74,15 +74,19 @@ public class FocusBoard {
 				}
 			}
 		}
+		
 		else if(turn == 'R'){
 			for(int i = 0;i < 8; i++){
 				for(int j = 0; j<8;j++){
+					try{
 					if(board[i][j].getTopPiece() == turn)
 						successors.addAll(findMoves(board[i][j],i,j));
+					}
+					catch(Exception e){}
 				}
 			}
 		}
-		return null;
+		return successors;
 	}
 	private Collection<? extends FocusBoard> findMoves(Square square,int x, int y) {
 		int squareStackSize = square.size();
@@ -92,7 +96,7 @@ public class FocusBoard {
 		HashSet<FocusBoard> movesPossible = new HashSet<FocusBoard>();
 		for(int i = 1; i <=squareStackSize;i++){
 			movesPossible.add(move(x,y,x+1,y+1,i));
-			System.out.println(movesPossible.size());
+			
 		}
 		return movesPossible;
 	}
