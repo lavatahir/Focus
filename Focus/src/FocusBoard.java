@@ -41,7 +41,6 @@ public class FocusBoard {
 		this.turn = turn;
 	}
 	//add generateSuccessors
-	//add goalState
 	//check if goal/game ended
 	public boolean gameEnd(){
 		if(piecesRemoved == 8){
@@ -91,13 +90,17 @@ public class FocusBoard {
 	private Collection<? extends FocusBoard> findMoves(Square square,int x, int y) {
 		int squareStackSize = square.size();
 		int distance = square.size();
-		int LowerIndex = 0 - distance;
-		int UpperIndex = distance;
+		int lowerIndex = 0 - distance;
+		int upperIndex = distance;
 		HashSet<FocusBoard> movesPossible = new HashSet<FocusBoard>();
 		for(int i = 1; i <=squareStackSize;i++){
-			movesPossible.add(move(x,y,x+1,y+1,i));
-			
+			for(int index = lowerIndex; index < upperIndex; index++){
+				System.out.println("HI"+movesPossible.size());
+				movesPossible.add(move(x,y,x+index,y,i));
+				//movesPossible.add(move(x,y,x,y+index,i));
+			}
 		}
+		System.out.println("HI"+movesPossible.size());
 		return movesPossible;
 	}
 	//add move which returns new state
@@ -157,7 +160,7 @@ public class FocusBoard {
 		System.out.println(queue);
 		
 		FocusBoard fb = new FocusBoard();
-		System.out.println(fb.generateSuccessors());/*
+		System.out.println(fb.generateSuccessors().size());/*
 		System.out.println(fb.boardToString());
 		
 		ArrayList<Character> pieces = new ArrayList<Character>();
