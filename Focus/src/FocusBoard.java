@@ -6,9 +6,11 @@ public class FocusBoard {
 	private String colors = "RB";
 	private Random r = new Random();
 	private int piecesRemoved;
+	private Character turn;
 	
 	public FocusBoard(){
 		piecesRemoved = 0;
+		turn = 'B';
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j < 8; j++){
 				if(i == 0 || i == 7){
@@ -31,11 +33,12 @@ public class FocusBoard {
 			}
 		}
 	}
-	public FocusBoard(Square[][] board, int piecesRemoved){
+	public FocusBoard(Square[][] board, int piecesRemoved, Character turn){
 		this.board = board;
 		this.colors = "RB";
 		this.r = new Random();
 		this.piecesRemoved = piecesRemoved;
+		this.turn = turn;
 	}
 	//add generateSuccessors
 	//add goalState
@@ -49,13 +52,22 @@ public class FocusBoard {
 		}
 		return false;
 	}
+	private void changeTurn(){
+		if(turn == 'B'){
+			turn = 'R';
+		}
+		else{
+			turn = 'B';
+		}
+	}
 	private HashSet<FocusBoard> generateSuccessors(char c) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	//add move which returns new state
 	public FocusBoard move(int startX, int startY, int endX, int endY, int numPiecesMove){
-		FocusBoard fb = new FocusBoard(board,piecesRemoved);
+		changeTurn();
+		FocusBoard fb = new FocusBoard(board,piecesRemoved,turn);
 		LinkedList<Character> pieces = fb.board[startX][startY].getPieces(numPiecesMove);
 		piecesRemoved+=fb.board[endX][endY].addPiece(pieces);
 		fb.board[startX][startY].removeStartPiece(pieces);
