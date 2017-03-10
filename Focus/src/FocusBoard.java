@@ -7,11 +7,15 @@ public class FocusBoard {
 	private Square[][] board = new Square[8][8];
 	private String colors = "RB";
 	private Random r = new Random();
-	private int piecesRemoved;
+	private ArrayList<Character> piecesRemoved;
+	private ArrayList<Character> currentTurnPiecesRemoved;
+	private ArrayList<Character> opponentTurnPiecesRemoved;
 	private Character turn;
 	
 	public FocusBoard(){
-		piecesRemoved = 0;
+		piecesRemoved = new ArrayList<Character>();
+		currentTurnPiecesRemoved = new ArrayList<Character>();
+		opponentTurnPiecesRemoved = new ArrayList<Character>();
 		turn = 'B';
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j < 8; j++){
@@ -35,12 +39,14 @@ public class FocusBoard {
 			}
 		}
 	}
-	public FocusBoard(Square[][] board, int piecesRemoved, Character turn){
+	public FocusBoard(Square[][] board, ArrayList<Character> piecesRemoved, Character turn, ArrayList<Character> currentTurnPiecesRemoved, ArrayList<Character> opponentTurnPiecesRemoved){
 		this.board = new Square[8][8];
 		this.board = this.copyBoard(board);
 		this.colors = "RB";
 		this.r = new Random();
 		this.piecesRemoved = piecesRemoved;
+		this.currentTurnPiecesRemoved = currentTurnPiecesRemoved;
+		this.opponentTurnPiecesRemoved = opponentTurnPiecesRemoved;
 		this.turn = turn;
 	}
 	public Square[][] copyBoard(Square[][] fboard){
@@ -53,12 +59,20 @@ public class FocusBoard {
 		
 		return result;
 	}
+	public int getOpponentRemoved(){
+		return opponentTurnPiecesRemoved.size();
+	}
 	public boolean gameEnd(){
-		if(piecesRemoved == 8){
+		if(opponentTurnPiecesRemoved.size() > 8){
+			System.out.println(opponentTurnPiecesRemoved);
 			return true;
 		}
-		else if(generateSuccessors(changeTurn(turn)).size() == 0){
+		else if(generateSuccessors(changeTurn(turn)).isEmpty()){
 			System.out.println("Player " + turn + " won");
+			return true;
+		}
+		else if(generateSuccessors(turn).size() == 0 || generateSuccessors(turn) == null){
+			System.out.println("Player " + changeTurn(turn) + " won");
 			return true;
 		}
 		return false;
@@ -71,7 +85,7 @@ public class FocusBoard {
 			return 'B';
 		}
 	}
-	public HashSet<FocusBoard> generateSuccessors(Character turn) {
+	public ArrayList<FocusBoard> generateSuccessors(Character turn) {
 		HashSet<FocusBoard> successors = new HashSet<FocusBoard>();
 		if(turn == 'B'){
 			for(int i = 0;i < 8; i++){
@@ -96,7 +110,7 @@ public class FocusBoard {
 				}
 			}
 		}
-		return successors;
+		return new ArrayList<FocusBoard>(successors);
 	}
 	private Collection<? extends FocusBoard> findMoves(Square square,int x, int y) {
 		int squareStackSize = square.size();
@@ -115,13 +129,12 @@ public class FocusBoard {
 			movesPossible.add(move(x,y,x,y-i,i));
 			}catch(Exception e){}
 		}
-		System.out.println("HI"+movesPossible.size());
 		return movesPossible;
 	}
 	//add move which returns new state
 	public FocusBoard move(int startX, int startY, int endX, int endY, int numPiecesMove){
 		Character newTurn = changeTurn(turn);
-		FocusBoard fb = new FocusBoard(board,piecesRemoved,newTurn);
+		FocusBoard fb = new FocusBoard(board,piecesRemoved,newTurn, currentTurnPiecesRemoved, opponentTurnPiecesRemoved);
 		
 		
 		LinkedList<Character> pieces = new LinkedList<Character>();
@@ -131,17 +144,28 @@ public class FocusBoard {
 		pieces.addAll(startSquare.getPieces(numPiecesMove));
 		
 		fb.board[startX][startY] = startSquare.removeStartPiece(pieces);
-		piecesRemoved += endSquare.addPiece(pieces);
+		piecesRemoved.addAll(endSquare.addPiece(pieces));
+		findWhichPiecesRemoved(piecesRemoved);
 		fb.board[endX][endY] = endSquare;
 		
-		System.out.println("This is copy:");
+		/*System.out.println("This is copy:");
 		System.out.println(fb);
 		
 		System.out.println("MY SHIT:");
-		System.out.println(this);
+		System.out.println(this);*/
 		
 		
 		return fb;
+	}
+	private void findWhichPiecesRemoved(ArrayList<Character> piecesRemoved) {
+		for(Character c : piecesRemoved){
+			if(c == turn){
+				currentTurnPiecesRemoved.add(c);
+			}
+			else if(c == changeTurn(turn)){
+				opponentTurnPiecesRemoved.add(c);
+			}
+		}
 	}
 	public char getRandomColor(){
 		return colors.charAt(r.nextInt(colors.length()));
@@ -180,9 +204,11 @@ public class FocusBoard {
 	public static void main(String[] args){
 		
 		FocusBoard fb = new FocusBoard();
+		
 		System.out.println(fb);
 		
 		System.out.println(fb.generateSuccessors('B').size());
+		//fb = fb.generateSuccessors('B').
 		/*
 		
 		ArrayList<Character> pieces = new ArrayList<Character>();
