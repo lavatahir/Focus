@@ -8,28 +8,35 @@ public class Square {
 	public Square(){
 		stack = new LinkedList<Character>();
 	}
+	public Square(Square toClone){
+		this.stack = new LinkedList<Character>();
+		this.stack.addAll(toClone.stack);
+	}
 	public Square(Character c){
 		stack = new LinkedList<Character>();
 		stack.add(c);
 	}
-	public int addPiece(List<Character> pieces){
+	public Square addPiece(List<Character> pieces){
+		Square copySquare = new Square(this);
 		int piecesRemoved = 0;
-		stack.addAll(0, pieces);
-		if(stack.size() >5){
+		copySquare.stack.addAll(0, pieces);
+		if(copySquare.stack.size() >5){
 			for(int i = stack.size();i>5;i--){
-				stack.remove(i-1);
+				copySquare.stack.remove(i-1);
 				piecesRemoved++;
 			}
 		}
-		return piecesRemoved;
+		return copySquare;
 	}
-	public void removeStartPiece(List<Character> pieces){
+	public Square removeStartPiece(List<Character> pieces){
+		Square copySquare = new Square(this);
 		if(pieces.size() > 1){
-			stack.removeAll(pieces);
+			copySquare.stack.removeAll(pieces);
 		}
 		else{
-			stack.remove(pieces.get(0));
+			copySquare.stack.remove(pieces.get(0));
 		}
+		return copySquare;
 	}
 	public List<Character> removeNumPieces(int numPiecesToRemove){
 		LinkedList<Character> piecesToRemove = new LinkedList<Character>();
@@ -58,4 +65,5 @@ public class Square {
 		}
 		return s;
 	}
+	
 }

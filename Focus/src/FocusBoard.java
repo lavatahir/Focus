@@ -35,11 +35,31 @@ public class FocusBoard {
 		}
 	}
 	public FocusBoard(Square[][] board, int piecesRemoved, Character turn){
-		this.board = board;
+		this.board = new Square[8][8];
+		/*for (int i = 0; i < 8; i++){ 
+			for(int j = 0; j < 8; j++){
+				try{
+				this.board[i][j] = new Square(board[i][j]);
+				}
+				catch(Exception e){}
+			}
+		}*/
+		this.board = this.copyBoard(board);
+		
 		this.colors = "RB";
 		this.r = new Random();
 		this.piecesRemoved = piecesRemoved;
 		this.turn = turn;
+	}
+	public Square[][] copyBoard(Square[][] fboard){
+		Square[][] result = new Square[fboard.length][fboard.length];
+		for(int r = 0; r < fboard.length; r++){
+			for(int s = 0; s < fboard.length; s++){
+				result[r][s] = fboard[r][s];
+			}
+		}
+		
+		return result;
 	}
 	//add generateSuccessors
 	//check if goal/game ended
@@ -67,6 +87,8 @@ public class FocusBoard {
 				for(int j = 0; j<8;j++){
 					try{
 					if(board[i][j].getTopPiece() == turn){
+						System.out.println(+i+" "+j + " turn:" + turn);
+						
 						successors.addAll(findMoves(board[i][j],i,j));
 					}
 					}catch(Exception e){}
@@ -96,7 +118,7 @@ public class FocusBoard {
 		HashSet<FocusBoard> movesPossible = new HashSet<FocusBoard>();
 		for(int i = 1; i <=squareStackSize;i++){
 			for(int index = lowerIndex; index < upperIndex; index++){
-				//System.out.println("HI"+movesPossible.size());
+				System.out.println("square stack size: " + squareStackSize);
 				System.out.println(move(x,y,x+index,y,i));
 				movesPossible.add(move(x,y,x+index,y,i));
 				//movesPossible.add(move(x,y,x,y+index,i));
@@ -109,9 +131,22 @@ public class FocusBoard {
 	public FocusBoard move(int startX, int startY, int endX, int endY, int numPiecesMove){
 		Character newTurn = changeTurn(turn);
 		FocusBoard fb = new FocusBoard(board,piecesRemoved,newTurn);
-		LinkedList<Character> pieces = fb.board[startX][startY].getPieces(numPiecesMove);
-		piecesRemoved+=fb.board[endX][endY].addPiece(pieces);
-		fb.board[startX][startY].removeStartPiece(pieces);
+		
+		
+		LinkedList<Character> pieces = new LinkedList<Character>();
+		Square startSquare = new Square(fb.board[startX][startY]);
+		pieces.addAll(startSquare.getPieces(numPiecesMove));
+		
+		fb.board[startX][startY] = startSquare.removeStartPiece(pieces);
+		fb.board[endX][endY] = startSquare.addPiece(pieces);
+		
+		System.out.println("This is copy:");
+		System.out.println(fb);
+		
+		System.out.println("MY SHIT:");
+		System.out.println(this);
+		
+		
 		return fb;
 	}
 	public char getRandomColor(){
@@ -149,7 +184,9 @@ public class FocusBoard {
 		
 		FocusBoard fb = new FocusBoard();
 		System.out.println(fb);
-		System.out.println(fb.generateSuccessors().size());
+		
+		fb.move(3, 3, 4, 5, 1);
+		//System.out.println(fb.generateSuccessors().size());
 		/*
 		
 		ArrayList<Character> pieces = new ArrayList<Character>();
