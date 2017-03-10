@@ -117,12 +117,10 @@ public class FocusBoard {
 		int upperIndex = distance;
 		HashSet<FocusBoard> movesPossible = new HashSet<FocusBoard>();
 		for(int i = 1; i <=squareStackSize;i++){
-			for(int index = lowerIndex; index < upperIndex; index++){
-				System.out.println("square stack size: " + squareStackSize);
-				System.out.println(move(x,y,x+index,y,i));
-				movesPossible.add(move(x,y,x+index,y,i));
-				//movesPossible.add(move(x,y,x,y+index,i));
-			}
+			movesPossible.add(move(x,y,x+i,y,i));
+			movesPossible.add(move(x,y,x-i,y,i));
+			movesPossible.add(move(x,y,x,y+i,i));
+			movesPossible.add(move(x,y,x,y-i,i));
 		}
 		System.out.println("HI"+movesPossible.size());
 		return movesPossible;
@@ -135,10 +133,12 @@ public class FocusBoard {
 		
 		LinkedList<Character> pieces = new LinkedList<Character>();
 		Square startSquare = new Square(fb.board[startX][startY]);
+		Square endSquare = new Square(fb.board[endX][endY]);
+		
 		pieces.addAll(startSquare.getPieces(numPiecesMove));
 		
 		fb.board[startX][startY] = startSquare.removeStartPiece(pieces);
-		fb.board[endX][endY] = startSquare.addPiece(pieces);
+		fb.board[endX][endY] = endSquare.addPiece(pieces);
 		
 		System.out.println("This is copy:");
 		System.out.println(fb);
@@ -185,8 +185,7 @@ public class FocusBoard {
 		FocusBoard fb = new FocusBoard();
 		System.out.println(fb);
 		
-		fb.move(3, 3, 4, 5, 1);
-		//System.out.println(fb.generateSuccessors().size());
+		System.out.println(fb.generateSuccessors().size());
 		/*
 		
 		ArrayList<Character> pieces = new ArrayList<Character>();
