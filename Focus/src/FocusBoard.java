@@ -112,15 +112,20 @@ public class FocusBoard {
 	}
 	private Collection<? extends FocusBoard> findMoves(Square square,int x, int y) {
 		int squareStackSize = square.size();
-		int distance = square.size();
-		int lowerIndex = 0 - distance;
-		int upperIndex = distance;
 		HashSet<FocusBoard> movesPossible = new HashSet<FocusBoard>();
 		for(int i = 1; i <=squareStackSize;i++){
+			try{
 			movesPossible.add(move(x,y,x+i,y,i));
+			}catch(Exception e){}
+			try{
 			movesPossible.add(move(x,y,x-i,y,i));
+			}catch(Exception e){}
+			try{
 			movesPossible.add(move(x,y,x,y+i,i));
+			} catch(Exception e){}
+			try{
 			movesPossible.add(move(x,y,x,y-i,i));
+			}catch(Exception e){}
 		}
 		System.out.println("HI"+movesPossible.size());
 		return movesPossible;
@@ -138,7 +143,8 @@ public class FocusBoard {
 		pieces.addAll(startSquare.getPieces(numPiecesMove));
 		
 		fb.board[startX][startY] = startSquare.removeStartPiece(pieces);
-		fb.board[endX][endY] = endSquare.addPiece(pieces);
+		piecesRemoved += endSquare.addPiece(pieces);
+		fb.board[endX][endY] = endSquare;
 		
 		System.out.println("This is copy:");
 		System.out.println(fb);

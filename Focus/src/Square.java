@@ -16,17 +16,17 @@ public class Square {
 		stack = new LinkedList<Character>();
 		stack.add(c);
 	}
-	public Square addPiece(List<Character> pieces){
-		Square copySquare = new Square(this);
+	public int addPiece(List<Character> pieces){
+		//Square copySquare = new Square(this);
 		int piecesRemoved = 0;
-		copySquare.stack.addAll(0, pieces);
-		if(copySquare.stack.size() >5){
+		this.stack.addAll(0, pieces);
+		if(this.stack.size() >5){
 			for(int i = stack.size();i>5;i--){
-				copySquare.stack.remove(i-1);
+				this.stack.remove(i-1);
 				piecesRemoved++;
 			}
 		}
-		return copySquare;
+		return piecesRemoved;
 	}
 	public Square removeStartPiece(List<Character> pieces){
 		Square copySquare = new Square(this);
