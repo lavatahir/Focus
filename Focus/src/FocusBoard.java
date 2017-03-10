@@ -37,16 +37,7 @@ public class FocusBoard {
 	}
 	public FocusBoard(Square[][] board, int piecesRemoved, Character turn){
 		this.board = new Square[8][8];
-		/*for (int i = 0; i < 8; i++){ 
-			for(int j = 0; j < 8; j++){
-				try{
-				this.board[i][j] = new Square(board[i][j]);
-				}
-				catch(Exception e){}
-			}
-		}*/
 		this.board = this.copyBoard(board);
-		
 		this.colors = "RB";
 		this.r = new Random();
 		this.piecesRemoved = piecesRemoved;
@@ -67,6 +58,7 @@ public class FocusBoard {
 			return true;
 		}
 		else if(generateSuccessors(changeTurn(turn)).size() == 0){
+			System.out.println("Player " + turn + " won");
 			return true;
 		}
 		return false;
@@ -163,8 +155,7 @@ public class FocusBoard {
 					while(spacesCount >0){
 						s+= " ";
 						spacesCount--;
-					}
-					
+					}	
 				}
 				else{
 					int spacesCount = 10 - board[i][j].size();
@@ -178,7 +169,6 @@ public class FocusBoard {
 				}
 			}
 			s+= "\n";
-			
 		}
 		return s;
 	}
