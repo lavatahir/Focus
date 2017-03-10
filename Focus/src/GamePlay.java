@@ -18,8 +18,8 @@ public class GamePlay {
 
 
 	public void playGame() {
-		int i = 12;
-		while( !boardToPlay.gameEnd()){
+		int i = 30;
+		while( i > 0){
 			System.out.println("The board:");
 			System.out.println(boardToPlay);
 			ArrayList<FocusBoard> player1Moves = boardToPlay.generateSuccessors(player1);

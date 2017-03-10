@@ -144,9 +144,13 @@ public class FocusBoard {
 		pieces.addAll(startSquare.getPieces(numPiecesMove));
 		
 		fb.board[startX][startY] = startSquare.removeStartPiece(pieces);
-		piecesRemoved.addAll(endSquare.addPiece(pieces));
+		SquareRemoval sqr = endSquare.addPiece(pieces);
+		
+		piecesRemoved.clear();
+		piecesRemoved.addAll(sqr.getSquaresRemoved());
+		
 		findWhichPiecesRemoved(piecesRemoved);
-		fb.board[endX][endY] = endSquare;
+		fb.board[endX][endY] = sqr.getSquare();
 		
 		/*System.out.println("This is copy:");
 		System.out.println(fb);

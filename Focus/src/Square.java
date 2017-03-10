@@ -16,26 +16,22 @@ public class Square {
 		stack = new LinkedList<Character>();
 		stack.add(c);
 	}
-	public ArrayList<Character> addPiece(List<Character> pieces){
-		//Square copySquare = new Square(this);
+	public SquareRemoval addPiece(List<Character> pieces){
+		
+		Square copySquare = new Square(this);
 		ArrayList<Character> piecesRemoved = new ArrayList<Character>();
-		this.stack.addAll(0, pieces);
-		if(this.stack.size() >5){
-			for(int i = stack.size();i>5;i--){
-				piecesRemoved.add(stack.get(i-1));
-				this.stack.remove(i-1);	
+		copySquare.stack.addAll(0, pieces);
+		if(copySquare.stack.size() >5){
+			for(int i = copySquare.stack.size(); i>5; i--){
+				piecesRemoved.add(copySquare.stack.get(i-1));
+				copySquare.stack.remove(i-1);	
 			}
 		}
-		return piecesRemoved;
+		return new SquareRemoval(copySquare, piecesRemoved);
 	}
 	public Square removeStartPiece(List<Character> pieces){
 		Square copySquare = new Square(this);
-		if(pieces.size() > 1){
-			copySquare.stack.removeAll(pieces);
-		}
-		else{
-			copySquare.stack.remove(pieces.get(0));
-		}
+		copySquare.stack.removeAll(pieces);
 		return copySquare;
 	}
 	public List<Character> removeNumPieces(int numPiecesToRemove){
@@ -64,6 +60,27 @@ public class Square {
 			s+= stack.get(i) + " ";
 		}
 		return s;
+	}
+	
+	public static void main(String[] args){
+		Square sq1 = new Square('B');
+		
+		Square sq2 = new Square('R');
+		
+		ArrayList<Character> pieces = new ArrayList<Character>();
+		pieces.add('R');
+		pieces.add('R');
+		pieces.add('B');
+		pieces.add('B');
+		
+		SquareRemoval sqr = sq1.addPiece(pieces);
+		sq1 = sqr.getSquare();
+		SquareRemoval sqr2 = sq2.addPiece(sq1.stack);
+		sq2 = sqr2.getSquare();
+		
+		System.out.println(sq1);
+		System.out.println(sq2);
+		System.out.println(sqr2.getSquaresRemoved());
 	}
 	
 }
