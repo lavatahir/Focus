@@ -62,13 +62,11 @@ public class FocusBoard {
 		
 		return result;
 	}
-	//add generateSuccessors
-	//check if goal/game ended
 	public boolean gameEnd(){
 		if(piecesRemoved == 8){
 			return true;
 		}
-		else if(generateSuccessors().size() == 0){
+		else if(generateSuccessors(changeTurn(turn)).size() == 0){
 			return true;
 		}
 		return false;
@@ -81,7 +79,7 @@ public class FocusBoard {
 			return 'B';
 		}
 	}
-	public HashSet<FocusBoard> generateSuccessors() {
+	public HashSet<FocusBoard> generateSuccessors(Character turn) {
 		HashSet<FocusBoard> successors = new HashSet<FocusBoard>();
 		if(turn == 'B'){
 			for(int i = 0;i < 8; i++){
@@ -194,7 +192,7 @@ public class FocusBoard {
 		FocusBoard fb = new FocusBoard();
 		System.out.println(fb);
 		
-		System.out.println(fb.generateSuccessors().size());
+		System.out.println(fb.generateSuccessors('B').size());
 		/*
 		
 		ArrayList<Character> pieces = new ArrayList<Character>();
