@@ -145,10 +145,12 @@ public class FocusBoard {
 		
 		fb.board[startX][startY] = startSquare.removeStartPiece(pieces);
 		SquareRemoval sqr = endSquare.addPiece(pieces);
+		endSquare = sqr.getSquare();
 		
 		piecesRemoved.clear();
 		piecesRemoved.addAll(sqr.getSquaresRemoved());
-		
+		//System.out.println("SIZ OF REMOVED:"+piecesRemoved.size());
+		//System.out.println("SIZ OF squares REMOVED:"+sqr.getSquaresRemoved().size());
 		findWhichPiecesRemoved(piecesRemoved);
 		fb.board[endX][endY] = sqr.getSquare();
 		
@@ -162,6 +164,8 @@ public class FocusBoard {
 		return fb;
 	}
 	private void findWhichPiecesRemoved(ArrayList<Character> piecesRemoved) {
+		currentTurnPiecesRemoved.clear();
+		opponentTurnPiecesRemoved.clear();
 		for(Character c : piecesRemoved){
 			if(c == turn){
 				currentTurnPiecesRemoved.add(c);
