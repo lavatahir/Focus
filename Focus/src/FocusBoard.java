@@ -1,6 +1,7 @@
 package src;
 import java.util.*;
 
+
 public class FocusBoard {
 
 	private Square[][] board = new Square[8][8];
@@ -185,6 +186,11 @@ public class FocusBoard {
 			
 		}
 		return s;
+	}
+	@Override
+	public boolean equals(Object o) {
+		FocusBoard fb = (FocusBoard) o;
+		return ((piecesRemoved == fb.piecesRemoved) && (Arrays.deepEquals(board, fb.board) && turn == fb.turn));
 	}
 	public static void main(String[] args){
 		
