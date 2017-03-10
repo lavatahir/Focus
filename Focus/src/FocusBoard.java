@@ -88,12 +88,9 @@ public class FocusBoard {
 				for(int j = 0; j<8;j++){
 					try{
 					if(board[i][j].getTopPiece() == turn){
-						System.out.println(+i+" "+j + " turn:" + turn);
-						
 						successors.addAll(findMoves(board[i][j],i,j));
 					}
 					}catch(Exception e){}
-					
 				}
 			}
 		}
