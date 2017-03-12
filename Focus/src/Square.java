@@ -4,32 +4,36 @@ import java.util.*;
 public class Square {
 
 	private LinkedList<Character> stack;
+	private ArrayList<Character> removedChars;
 	
 	public Square(){
 		stack = new LinkedList<Character>();
+		removedChars = new ArrayList<Character>();
 	}
 	public Square(Square toClone){
 		this.stack = new LinkedList<Character>();
 		this.stack.addAll(toClone.stack);
+		this.removedChars = new ArrayList<Character>();
+		this.removedChars.addAll(toClone.removedChars);
 	}
 	public Square(Character c){
 		stack = new LinkedList<Character>();
 		stack.add(c);
+		this.removedChars = new ArrayList<Character>();
 	}
-	public SquareRemoval addPiece(List<Character> pieces){
-		
+	
+	public Square addPieces(List<Character> pieces){
 		Square copySquare = new Square(this);
-		ArrayList<Character> piecesRemoved = new ArrayList<Character>();
 		copySquare.stack.addAll(0,pieces);
-		if(copySquare.stack.size() >5){
+		if(copySquare.stack.size() > 5){
 			for(int i = copySquare.stack.size(); i>5; i--){
-				piecesRemoved.add(copySquare.stack.get(i-1));
+				copySquare.removedChars.add(copySquare.stack.get(i-1));
 				copySquare.stack.remove(i-1);	
 			}
 		}
-		return new SquareRemoval(copySquare, piecesRemoved);
+		return copySquare;
 	}
-	public Square removeStartPiece(List<Character> pieces){
+	public Square removePieces(List<Character> pieces){
 		Square copySquare = new Square(this);
 		
 		for(Character c :pieces){
@@ -38,6 +42,18 @@ public class Square {
 		//removes all instances of pieces elements in stack
 		//copySquare.stack.removeAll(pieces);
 		return copySquare;
+	}
+	public Square removePieces(int numPieces){
+		Square copySquare = new Square(this);
+		//System.out.println(copySquare.stack);
+		for(int i = 0; i < numPieces;i++){
+			//copySquare.stack.remove(i);
+			copySquare.stack.poll();
+		}
+		return copySquare;
+	}
+	public void clearRemovedChars(){
+		removedChars.clear();
 	}
 	public List<Character> removeNumPieces(int numPiecesToRemove){
 		LinkedList<Character> piecesToRemove = new LinkedList<Character>();
@@ -49,8 +65,21 @@ public class Square {
 	public int size(){
 		return stack.size();
 	}
+	public LinkedList<Character> getFirstXPieces(int x){
+		LinkedList<Character> firstXPieces = new LinkedList<Character>();
+		for(int i = 0 ; i < x; i++){
+			firstXPieces.add(stack.get(i));
+		}
+		return firstXPieces;
+	}
 	public Character getTopPiece(){
 		return stack.get(0);
+	}
+	public LinkedList<Character> getStack(){
+		return stack;
+	}
+	public ArrayList<Character> getRemovedChars(){
+		return removedChars;
 	}
 	public LinkedList<Character> getPieces(int numPiecesMove){
 		LinkedList<Character> pieces = new LinkedList<Character>();
@@ -68,17 +97,27 @@ public class Square {
 	}
 	
 	public static void main(String[] args){
-		Square sq1 = new Square('B');
+		
+		Square sq = new Square('B');
+		ArrayList<Character> pieces = new ArrayList<Character>();
+		pieces.add('R');
+		pieces.add('B');
+		pieces.add('R');
+		sq = sq.addPieces(pieces);
+		System.out.println(sq.stack);
 		
 		Square sq2 = new Square();
+		System.out.println(sq2.stack);
+		LinkedList<Character> toMove = sq.getFirstXPieces(2);
+		System.out.println("yo");
+		System.out.println(toMove);
+		sq2 = sq2.addPieces(toMove);
+		sq = sq.removePieces(2);
 		
-		SquareRemoval sqr = sq2.addPiece(sq1.stack);
-		sq2 = sqr.getSquare();
+		System.out.println(sq.stack);
+		System.out.println(sq2.stack);
 		
 		
-		System.out.println(sq1);
-		System.out.println(sq2);
-		System.out.println(sqr.getSquaresRemoved());
 	}
 	
 }

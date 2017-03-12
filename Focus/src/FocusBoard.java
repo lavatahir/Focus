@@ -7,15 +7,15 @@ public class FocusBoard {
 	private Square[][] board = new Square[8][8];
 	private String colors = "RB";
 	private Random r = new Random();
-	private ArrayList<Character> piecesRemoved;
-	private ArrayList<Character> currentTurnPiecesRemoved;
-	private ArrayList<Character> opponentTurnPiecesRemoved;
+	//private ArrayList<Character> piecesRemoved;
+	private int bPiecesRemoved;
+	private int rPiecesRemoved;
 	private Character turn;
 	
 	public FocusBoard(){
-		piecesRemoved = new ArrayList<Character>();
-		currentTurnPiecesRemoved = new ArrayList<Character>();
-		opponentTurnPiecesRemoved = new ArrayList<Character>();
+		//piecesRemoved = new ArrayList<Character>();
+		bPiecesRemoved = 0;
+		rPiecesRemoved = 0;
 		turn = 'B';
 		for(int i = 0; i < 8; i++){
 			for(int j = 0; j < 8; j++){
@@ -39,15 +39,18 @@ public class FocusBoard {
 			}
 		}
 	}
-	public FocusBoard(Square[][] board, ArrayList<Character> piecesRemoved, Character turn, ArrayList<Character> currentTurnPiecesRemoved, ArrayList<Character> opponentTurnPiecesRemoved){
+	public FocusBoard(Square[][] board, Character turn, int currentTurnPiecesRemoved, int opponentTurnPiecesRemoved){
 		this.board = new Square[8][8];
 		this.board = this.copyBoard(board);
 		this.colors = "RB";
 		this.r = new Random();
-		this.piecesRemoved = piecesRemoved;
-		this.currentTurnPiecesRemoved = currentTurnPiecesRemoved;
-		this.opponentTurnPiecesRemoved = opponentTurnPiecesRemoved;
+		//this.piecesRemoved = piecesRemoved;
+		this.bPiecesRemoved = currentTurnPiecesRemoved;
+		this.rPiecesRemoved = opponentTurnPiecesRemoved;
 		this.turn = turn;
+	}
+	public Square[][] getBoard(){
+		return board;
 	}
 	public Square[][] copyBoard(Square[][] fboard){
 		Square[][] result = new Square[fboard.length][fboard.length];
@@ -59,20 +62,27 @@ public class FocusBoard {
 		
 		return result;
 	}
-	public int getOpponentRemoved(){
-		return opponentTurnPiecesRemoved.size();
+	public int getRPiecesRemoved(){
+		return rPiecesRemoved;
+	}
+	public int getBPiecesRemoved(){
+		return bPiecesRemoved;
 	}
 	public boolean gameEnd(){
-		if(opponentTurnPiecesRemoved.size() > 8){
-			System.out.println(opponentTurnPiecesRemoved);
+		if(rPiecesRemoved > 8){
+			System.out.println("B won the game");
 			return true;
 		}
-		else if(generateSuccessors(changeTurn(turn)).isEmpty()){
-			System.out.println("Player " + turn + " won");
+		else if(bPiecesRemoved > 8){
+			System.out.println("R won the game");
 			return true;
 		}
-		else if(generateSuccessors(turn).size() == 0 || generateSuccessors(turn) == null){
-			System.out.println("Player " + changeTurn(turn) + " won");
+		else if(generateSuccessors('B').isEmpty()){
+			System.out.println("Player R won");
+			return true;
+		}
+		else if(generateSuccessors('R').isEmpty()){
+			System.out.println("Player B won");
 			return true;
 		}
 		return false;
@@ -134,47 +144,64 @@ public class FocusBoard {
 	//add move which returns new state
 	public FocusBoard move(int startX, int startY, int endX, int endY, int numPiecesMove){
 		Character newTurn = changeTurn(turn);
-		FocusBoard fb = new FocusBoard(board,piecesRemoved,newTurn, currentTurnPiecesRemoved, opponentTurnPiecesRemoved);
-		
-		
+		FocusBoard fb = new FocusBoard(board,newTurn, bPiecesRemoved, rPiecesRemoved);	
 		LinkedList<Character> pieces = new LinkedList<Character>();
-		Square startSquare = new Square(fb.board[startX][startY]);
-		Square endSquare = new Square(fb.board[endX][endY]);
+		/*
+		for(int i = 0; i < numPiecesMove;i++){
+			pieces.add(fb.board[startX][startY].getStack().get(i));
+		}*/
+		pieces = fb.board[startX][startY].getFirstXPieces(numPiecesMove);
 		
-		pieces.addAll(startSquare.getPieces(numPiecesMove));
+		fb.board[endX][endY] = fb.board[endX][endY].addPieces(pieces);
 		
-		fb.board[startX][startY] = startSquare.removeStartPiece(pieces);
-		SquareRemoval sqr = endSquare.addPiece(pieces);
-		endSquare = sqr.getSquare();
+		//System.out.println(pieces);
+		fb.board[startX][startY] = fb.board[startX][startY].removePieces(numPiecesMove);
 		
-		piecesRemoved.clear();
-		piecesRemoved.addAll(sqr.getSquaresRemoved());
-		//System.out.println("SIZ OF REMOVED:"+piecesRemoved.size());
-		//System.out.println("SIZ OF squares REMOVED:"+sqr.getSquaresRemoved().size());
-		findWhichPiecesRemoved(piecesRemoved);
-		fb.board[endX][endY] = sqr.getSquare();
 		
-		/*System.out.println("This is copy:");
-		System.out.println(fb);
 		
-		System.out.println("MY SHIT:");
-		System.out.println(this);*/
+		int origBAmount = findColorAmount(this,'B');
+		int origRAmount = findColorAmount(this, 'R');
+		int fbBAmount = findColorAmount(fb, 'B');
+		int fbRAmount = findColorAmount(fb, 'R');
 		
+		fb.bPiecesRemoved = origBAmount - fbBAmount;
+		fb.rPiecesRemoved = origRAmount - fbRAmount;
+		
+		//fb.piecesRemoved.addAll(fb.board[endX][endY].getRemovedChars());
+		//fb.findWhichPiecesRemoved(fb.piecesRemoved);
+		//fb.board[endX][endY].clearRemovedChars();
 		
 		return fb;
 	}
-	private void findWhichPiecesRemoved(ArrayList<Character> piecesRemoved) {
-		currentTurnPiecesRemoved.clear();
-		opponentTurnPiecesRemoved.clear();
-		for(Character c : piecesRemoved){
-			if(c == turn){
-				currentTurnPiecesRemoved.add(c);
-			}
-			else if(c == changeTurn(turn)){
-				opponentTurnPiecesRemoved.add(c);
+	private int findColorAmount(FocusBoard fb, char color){
+		int amount = 0;
+		for(int i = 0; i < 8; i++){
+			for(int j = 0; j < 8; j++){
+				try{
+				LinkedList<Character> bAmountInStack = fb.board[i][j].getStack();
+				for(int x = 0; x < bAmountInStack.size();x++){
+					if(bAmountInStack.get(x).charValue() == color){
+						amount++;
+					}
+				}
+				}
+				catch(Exception e){}
 			}
 		}
-	}
+		return amount;
+	}/*
+	private void findWhichPiecesRemoved(ArrayList<Character> piecesRemoved) {
+		bPiecesRemoved.clear();
+		rPiecesRemoved.clear();
+		for(Character c : piecesRemoved){
+			if(c == 'B'){
+				bPiecesRemoved.add(c);
+			}
+			else if(c == 'R'){
+				rPiecesRemoved.add(c);
+			}
+		}
+	}*/
 	public char getRandomColor(){
 		return colors.charAt(r.nextInt(colors.length()));
 	}
@@ -207,36 +234,64 @@ public class FocusBoard {
 	@Override
 	public boolean equals(Object o) {
 		FocusBoard fb = (FocusBoard) o;
-		return ((piecesRemoved == fb.piecesRemoved) && (Arrays.deepEquals(board, fb.board) && turn == fb.turn));
+		return ((fb.bPiecesRemoved == this.bPiecesRemoved) &&(fb.rPiecesRemoved == this.rPiecesRemoved) && (Arrays.deepEquals(board, fb.board) && turn == fb.turn));
 	}
 	public static void main(String[] args){
 		
 		FocusBoard fb = new FocusBoard();
-		
 		System.out.println(fb);
+		/*ArrayList<FocusBoard> successors = fb.generateSuccessors('B');
+		for(FocusBoard f : successors){
+			System.out.println(f);
+		}
+		System.out.println(successors.size());
+		System.out.println(fb.findColorAmount(fb, 'B'));
 		
-		System.out.println(fb.generateSuccessors('B').size());
-		//fb = fb.generateSuccessors('B').
-		/*
+		System.out.println("HI");
+		System.out.println(fb);
 		
 		ArrayList<Character> pieces = new ArrayList<Character>();
 		pieces.add('R');
 		pieces.add('B');
+		pieces.add('B');
+		pieces.add('B');
+		pieces.add('B');
+		for(int i = 0; i < 20; i++){
+			ArrayList<FocusBoard> playerBMoves = fb.generateSuccessors('B');
+			fb = playerBMoves.get(i);
+			System.out.println(fb);
+			System.out.println(fb.getRPiecesRemoved());
+			System.out.println(fb.getBPiecesRemoved());
+		}*/
 		
-		fb.move(1,1,1,2,1);
-		System.out.println(fb.boardToString());
 		
-		fb.move(1,2,1,3,2);
-		System.out.println(fb.boardToString());
+		fb = fb.move(3,3,3,4,1);
+		System.out.println(fb);
+		fb = fb.move(3,2,3,4,1);
+		System.out.println(fb);
+		fb = fb.move(3,1,3,4,1);
+		System.out.println(fb);
+		fb = fb.move(3,5,3,4,1);
+		System.out.println(fb);
+		fb = fb.move(3,6,3,4,1);
+		System.out.println(fb);
+		System.out.println("HI");
+		System.out.println(fb.getRPiecesRemoved());
+		System.out.println(fb.getBPiecesRemoved());
+		fb = fb.move(4,4,3,4,1);
+		System.out.println(fb);
+		System.out.println("BYE");
+		System.out.println(fb.getRPiecesRemoved());
+		System.out.println(fb.getBPiecesRemoved());
+		fb = fb.move(1,3,2,3,1);
+		System.out.println("right");
+		System.out.println(fb);
+		fb = fb.move(2,3,3,4,2);
+		System.out.println(fb);
+		System.out.println("CRY");
+		System.out.println(fb.getRPiecesRemoved());
+		System.out.println(fb.getBPiecesRemoved());
 		
-		fb.move(2,1,2,2,1);
-		System.out.println(fb.boardToString());
 		
-		fb.move(2,2,2,3,2);
-		System.out.println(fb.boardToString());
-		
-		fb.move(1,3,2,3,3);
-		System.out.println(fb.boardToString());
-		System.out.println(fb.piecesRemoved);*/
 	}
 }
