@@ -4,7 +4,6 @@ import java.util.*;
 
 public class GamePlay {
 	private FocusBoard boardToPlay;
-	
 	private Character playerB;
 	private Character playerR;
 	private int origBAmount;
@@ -77,8 +76,7 @@ public class GamePlay {
 				newRAmount = prevRAmount;
 			}
 			System.out.println("B has captured:" + (origRAmount - newRAmount) + " R colors");
-			
-			
+				
 			air.alphaBetaMiniMax(root, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, playerR);
 			boardToPlay = air.getBestMove().getCurState();
 			root = air.getBestMove();
