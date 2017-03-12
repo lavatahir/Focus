@@ -66,7 +66,6 @@ public class GamePlay {
 			System.out.println("FINAL"+origRAmount);
 			
 			aib.alphaBetaMiniMax(root, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, playerB);
-			ArrayList<FocusBoard> playerBMoves = boardToPlay.generateSuccessors(playerB);
 			boardToPlay = aib.getBestMove().getCurState();
 			root = aib.getBestMove();
 			System.out.println("After playerB move:");
@@ -79,7 +78,7 @@ public class GamePlay {
 			}
 			System.out.println("B has captured:" + (origRAmount - newRAmount) + " R colors");
 			
-			/*
+			
 			air.alphaBetaMiniMax(root, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, playerR);
 			boardToPlay = air.getBestMove().getCurState();
 			root = air.getBestMove();
@@ -90,7 +89,8 @@ public class GamePlay {
 			if(newBAmount <=0){
 				newBAmount = prevBAmount;
 			}
-			System.out.println("R has captured:" + (origBAmount - newBAmount) + " B colors");*/
+			System.out.println("R has captured:" + (origBAmount - newBAmount) + " B colors");
+			/*
 			ArrayList<FocusBoard> playerRMoves = boardToPlay.generateSuccessors(playerR);
 			boardToPlay = playerRMoves.get(0);
 			System.out.println("After playerR move:");
@@ -101,7 +101,7 @@ public class GamePlay {
 				newBAmount = prevBAmount;
 			}
 			System.out.println("R has captured:" + (origBAmount - newBAmount) + " B colors");
-			
+			*/
 			/*
 			ArrayList<FocusBoard> playerRMoves = boardToPlay.generateSuccessors(playerR);
 			boardToPlay = playerRMoves.get(0);
