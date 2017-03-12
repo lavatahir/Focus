@@ -9,12 +9,14 @@ public class ABPruningAI {
 	private Node bestMove;
 	private int origBAmount;
 	private int origRAmount;
+	private Character color;
 	
-	public ABPruningAI(int uptoDepth, int bAmount, int rAmount){
+	public ABPruningAI(int uptoDepth, int bAmount, int rAmount, Character color){
 		this.uptoDepth = uptoDepth;
 		bestMove = null;
 		this.origBAmount = bAmount;
 		this.origRAmount = rAmount;
+		this.color = color;
 	}
 	public int alphaBetaMiniMax(Node node, int alpha, int beta, int depth, Character color){
 		
@@ -94,44 +96,40 @@ public class ABPruningAI {
 		}
 		return amount;
 	}
-	//Return the number of opponent pieces I can potentially catch
-		private int playerBHeuristic(Node node) {
-			int fbRAmount = findColorAmount(node.getCurState(),'R');
-			return origRAmount - fbRAmount;
-			
-		}
+	private int playerBHeuristic(Node node) {
+		int fbRAmount = findColorAmount(node.getCurState(),'R');
+		return origRAmount - fbRAmount;	
+	}
 
-		private int playerRHeuristic(Node node) {
-			
-			int min = 0;
-			int max = 0;
-			for(int i=0; i<8; i++){
-				for(int j=0; j<node.getCurState().getBoard()[i].length; j++){
-					if(node.getCurState().getBoard()[i][j]!=null){
-						max++;
-						if(node.getCurState().getBoard()[i][j].size()>=1){
-							min++;
-						}
+	private int playerRHeuristic(Node node) {		
+		int min = 0;
+		int max = 0;
+		for(int i=0; i<8; i++){
+			for(int j=0; j<node.getCurState().getBoard()[i].length; j++){
+				if(node.getCurState().getBoard()[i][j]!=null){
+					max++;
+					if(node.getCurState().getBoard()[i][j].size()>=1){
+						min++;
 					}
-				}
+					}
 			}
-			
-			Random random = new Random();
-			return random.nextInt(max - min + 1) + min;
-		}
+		}	
+		Random random = new Random();
+		return random.nextInt(max - min + 1) + min;
+	}
 		
-		public ArrayList<Node> generateChildren(Node node, Character color)
-		{
-			ArrayList<Node> children = new ArrayList<>();
-			ArrayList<FocusBoard> successors = node.getCurState().generateSuccessors(color);
-			for(FocusBoard fb : successors){
-				children.add(new Node(node, fb));
-			}
-			//children.addAll(node.getCurState().generateSuccessors(color));
-			return children;
-			
+	public ArrayList<Node> generateChildren(Node node, Character color)
+	{
+		ArrayList<Node> children = new ArrayList<>();
+		ArrayList<FocusBoard> successors = node.getCurState().generateSuccessors(color);
+		for(FocusBoard fb : successors){
+			children.add(new Node(node, fb));
 		}
-		public Node getBestMove(){
-			return bestMove;
-		}
+		//children.addAll(node.getCurState().generateSuccessors(color));
+		return children;
+		
+	}
+	public Node getBestMove(){
+		return bestMove;
+	}
 }

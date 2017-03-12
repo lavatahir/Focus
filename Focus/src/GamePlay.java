@@ -54,7 +54,10 @@ public class GamePlay {
 		return amount;
 	}
 	public void playGame() {
-		int i = 100;
+		int i = 10;
+		ABPruningAI aib = new ABPruningAI(3,origBAmount,origRAmount, playerB);
+		ABPruningAI air = new ABPruningAI(2,origBAmount,origRAmount, playerR);
+		Node root = new Node(boardToPlay);
 		
 		while(!gameEnds()){
 			System.out.println("The board:");
@@ -62,10 +65,13 @@ public class GamePlay {
 			System.out.println("FINAL"+origBAmount);
 			System.out.println("FINAL"+origRAmount);
 			
+			aib.alphaBetaMiniMax(root, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, playerB);
 			ArrayList<FocusBoard> playerBMoves = boardToPlay.generateSuccessors(playerB);
-			boardToPlay = playerBMoves.get(0);
+			boardToPlay = aib.getBestMove().getCurState();
+			root = aib.getBestMove();
 			System.out.println("After playerB move:");
 			System.out.println(boardToPlay);
+			
 			int prevRAmount = newRAmount;
 			newRAmount = findColorAmount(boardToPlay,'R');
 			if(newRAmount <=0){
@@ -73,6 +79,18 @@ public class GamePlay {
 			}
 			System.out.println("B has captured:" + (origRAmount - newRAmount) + " R colors");
 			
+			/*
+			air.alphaBetaMiniMax(root, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, playerR);
+			boardToPlay = air.getBestMove().getCurState();
+			root = air.getBestMove();
+			System.out.println("After playerR move:");
+			System.out.println(boardToPlay);
+			int prevBAmount = newBAmount;
+			newBAmount = findColorAmount(boardToPlay,'B');
+			if(newBAmount <=0){
+				newBAmount = prevBAmount;
+			}
+			System.out.println("R has captured:" + (origBAmount - newBAmount) + " B colors");*/
 			ArrayList<FocusBoard> playerRMoves = boardToPlay.generateSuccessors(playerR);
 			boardToPlay = playerRMoves.get(0);
 			System.out.println("After playerR move:");
@@ -83,7 +101,19 @@ public class GamePlay {
 				newBAmount = prevBAmount;
 			}
 			System.out.println("R has captured:" + (origBAmount - newBAmount) + " B colors");
-			i--;
+			
+			/*
+			ArrayList<FocusBoard> playerRMoves = boardToPlay.generateSuccessors(playerR);
+			boardToPlay = playerRMoves.get(0);
+			System.out.println("After playerR move:");
+			System.out.println(boardToPlay);
+			int prevBAmount = newBAmount;
+			newBAmount = findColorAmount(boardToPlay,'B');
+			if(newBAmount <=0){
+				newBAmount = prevBAmount;
+			}
+			System.out.println("R has captured:" + (origBAmount - newBAmount) + " B colors");
+			i--;*/
 		}
 	}
 	public static void main(String[] args){
