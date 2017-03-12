@@ -22,13 +22,13 @@ public class GamePlay {
 		playerR = 'R';
 	}
 	public boolean gameEnds(){
-		if((boardToPlay.generateSuccessors('B').isEmpty()) || ((origBAmount - newBAmount) == 5)){
+		if((boardToPlay.generateSuccessors('B').isEmpty()) || ((origBAmount - newBAmount) >= 5)){
 			System.out.println("Player R won");
 			System.out.println("WINBold"+origBAmount);
 			System.out.println("WINBnew"+newBAmount);
 			return true;
 		}
-		else if(boardToPlay.generateSuccessors('R').isEmpty() || ((origRAmount - newRAmount) == 5)){
+		else if(boardToPlay.generateSuccessors('R').isEmpty() || ((origRAmount - newRAmount) >= 5)){
 			System.out.println("Player B won");
 			System.out.println("WINRold"+origRAmount);
 			System.out.println("WINRnew"+newRAmount);
@@ -85,37 +85,6 @@ public class GamePlay {
 			System.out.println("R has captured:" + (origBAmount - newBAmount) + " B colors");
 			i--;
 		}
-		/*
-		while(!gameEnds()){
-		
-			System.out.println("The board:");
-			System.out.println(boardToPlay);
-			
-			ArrayList<FocusBoard> playerBMoves = boardToPlay.generateSuccessors(playerB);
-			boardToPlay = playerBMoves.get(0);
-			System.out.println("After playerB move:");
-			System.out.println(boardToPlay);
-			int prevBAmount = newBAmount;
-			newBAmount = findColorAmount(boardToPlay,'R');
-			if(newBAmount <=0){
-				newBAmount = prevBAmount;
-			}
-			System.out.println("B has captured:" + (origRAmount - newRAmount) + " R colors");
-			
-			ArrayList<FocusBoard> playerRMoves = boardToPlay.generateSuccessors(playerR);
-			boardToPlay = playerRMoves.get(0);
-			System.out.println("After playerR move:");
-			System.out.println(boardToPlay);
-			int prevRAmount = newRAmount;
-			newRAmount = findColorAmount(boardToPlay,'R');
-			if(newRAmount <=0){
-				newRAmount = prevRAmount;
-			}
-			System.out.println("R has captured:" + (origRAmount - newRAmount) + " B colors");
-			System.out.println("HIB"+origBAmount);
-			System.out.println("HIR"+origRAmount);
-		}
-		*/
 	}
 	public static void main(String[] args){
 		GamePlay gp = new GamePlay();
