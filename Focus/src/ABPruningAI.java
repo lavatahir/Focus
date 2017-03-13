@@ -75,7 +75,7 @@ public class ABPruningAI {
 		}
 		
 		else{
-			return playerRHeuristic(node);
+			return playerRHeuristic2(node);
 		}
 		
 	}
@@ -99,6 +99,25 @@ public class ABPruningAI {
 	private int playerBHeuristic(Node node) {
 		int fbRAmount = findColorAmount(node.getCurState(),'R');
 		return origRAmount - fbRAmount;	
+	}
+	
+	private int playerRHeuristic2(Node node) {		
+		int countStack = 0;
+		FocusBoard fb = node.getCurState();
+		for(int i = 0; i < 8; i++){
+			for(int j = 0; j < 8; j++){
+				try{
+				LinkedList<Character> amountInStack = fb.getBoard()[i][j].getStack();
+					for(int x = 0; x < amountInStack.size();x++){
+						if(amountInStack.size() > 3){
+							countStack++;
+						}
+					}
+				}
+				catch(Exception e){}
+			}
+		}
+		return countStack;
 	}
 
 	private int playerRHeuristic(Node node) {		
