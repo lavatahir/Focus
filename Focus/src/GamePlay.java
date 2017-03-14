@@ -21,13 +21,13 @@ public class GamePlay {
 		playerR = 'R';
 	}
 	public boolean gameEnds(){
-		if((boardToPlay.generateSuccessors('B').isEmpty()) || ((origBAmount - newBAmount) >= 3)){
+		if((boardToPlay.generateSuccessors('B').isEmpty()) || ((origBAmount - newBAmount) >= 6)){
 			System.out.println("Player R won");
 			System.out.println("WINBold"+origBAmount);
 			System.out.println("WINBnew"+newBAmount);
 			return true;
 		}
-		else if(boardToPlay.generateSuccessors('R').isEmpty() || ((origRAmount - newRAmount) >= 3)){
+		else if(boardToPlay.generateSuccessors('R').isEmpty() || ((origRAmount - newRAmount) >= 6)){
 			System.out.println("Player B won");
 			System.out.println("WINRold"+origRAmount);
 			System.out.println("WINRnew"+newRAmount);
@@ -54,8 +54,8 @@ public class GamePlay {
 	}
 	public void playGame() {
 		int i = 10;
-		ABPruningAI aib = new ABPruningAI(2,origBAmount,origRAmount, playerB);
-		ABPruningAI air = new ABPruningAI(2,origBAmount,origRAmount, playerR);
+		ABPruningAI aib = new ABPruningAI(4,origBAmount,origRAmount, playerB);
+		ABPruningAI air = new ABPruningAI(4,origBAmount,origRAmount, playerR);
 		Node root = new Node(boardToPlay);
 		
 		while(!gameEnds()){
